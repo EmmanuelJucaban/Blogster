@@ -3,7 +3,12 @@ require 'test_helper'
 
 class CreateCategoriesTest < ActionDispatch::IntegrationTest
 
+  def setup
+    @user = User.create(username: "Manny", email: "manny@test.com", password: "tst", admin: true)
+  end
+
   test 'get new category form and create category' do
+    sign_in_as(@user, "tst")
     get new_category_path
     assert_template 'categories/new'
 
@@ -12,10 +17,11 @@ class CreateCategoriesTest < ActionDispatch::IntegrationTest
     end
 
     assert_template 'categories/index'
-    assert_match 'sports', response.body
+    assert_match 'Sports', response.body
   end
 
   test 'invalid category should result in failure' do
+    sign_in_as(@user, "tst")
     get new_category_path
     assert_template 'categories/new'
 
